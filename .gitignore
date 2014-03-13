@@ -1,5 +1,6 @@
 *.class
 *.json
+Data*
 
 # Package Files #
 *.jar

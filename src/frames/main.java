@@ -1,37 +1,39 @@
 package frames;
 
+import Components.JmyMenuItem;
+import Tools.Tools;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 public class main extends JFrame implements ActionListener  {
     public  main(String name) {
         super(name);
 
-
-        setPreferredSize(new Dimension(300, 400));
-
-        JMenuBar menu = new JMenuBar();
-        JMenu menuParts = new JMenu("Part I");
-        JMenu jmiOpen = new JMenu("Lesson 1");
-        JMenuItem jmiOpen1 = new JMenuItem("Part 13");
-        jmiOpen1.addActionListener(this);
-
-        jmiOpen.add(jmiOpen1);
-        menuParts.add(jmiOpen);
-        menu.add(menuParts);
-
-        menuParts = new JMenu("Part II");
-        menu.add(menuParts);
-
+        setPreferredSize(new Dimension(1024, 600));
+        setExtendedState(MAXIMIZED_BOTH);
+        JMenuBar menu = null;
+        try {
+            String json = Tools.fileRead(System.getProperty("user.dir") + "\\Data\\" + "menu.json");
+            menu = Tools.parseLessonsMenu(json, this);
+        } catch (org.json.simple.parser.ParseException pe) {
+            pe.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Cann't parse menu: file is not valid!");
+            System.exit(1);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Cann't parse menu: file not found!");
+            System.exit(1);
+        }
         setJMenuBar(menu);
-
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println(e.getActionCommand());
-
+        JmyMenuItem clickedItem = (JmyMenuItem)e.getSource();
+        System.out.println(clickedItem.getName() + ": " + clickedItem.getFileName());
     }
 }
